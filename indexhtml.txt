@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>House Price Predictor</title>
+  </head>
+  <body class="bg-dark" >
+    <div class="container">
+        <div class="row">
+            <div class="card" style="width:100%; height:100%; margin-top:50px;" >
+                <div class="card-header" style="text-align: center;" >
+                    <h1>Welcome to House Price Predictor</h1>
+                </div>
+                <div class="card-body">
+                    <form accept-charset="utf-8" method="post" onsubmit="send_data()"  >
+                        <div class="row">
+                            <div class="col-md-6 form-group" style="text-align: center;" >
+                                <label><b>Select the Location:</b></label>
+                                <select name="location" id="location" required class="selectpicker form-control">
+                                    {% for location in locations%}
+                                        <option value="{{location}}">{{location}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 form-group" style="text-align: center;" >
+                                <label><b>Enter BHK:</b></label>
+                                <input required type="text" class="form-control" placeholder="Enter BHK" name="bhk" id="bhk">
+                            </div>
+                            <div class="col-md-6 form-group" style="text-align: center;" >
+                                <label><b>Enter Area in Square Feet :</b></label>
+                                <input required type="text" class="form-control" placeholder="Enter Area in Square Feet" name="area" id="area">
+                            </div>
+                            <div class="col-md-12 form-group" style="margin-top: 30px;">
+                                <button type="submit" class="btn btn-primary form-control" >Predict Price</button>
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+
+                    <div class="col-md-12" style="text-align: center;">
+                        <h3><span id="prediction"></span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener("submit", (e)=> e.preventDefault())
+        const predictSpan = document.getElementById("prediction")
+        function send_data() {
+            const fd = new FormData(document.querySelector('form'))
+            const xhr = new XMLHttpRequest()
+
+            xhr.open('POST', '/predict', true)
+
+            predictSpan.innerHTML = "Wait, Predicting Price..."
+
+            xhr.onreadystatechange = () => {
+                if(xhr.readyState == XMLHttpRequest.DONE) {
+                    predictSpan.innerHTML = "Prediction: ₹"+xhr.responseText
+                }
+            }
+
+            xhr.onload = function() {}
+
+            xhr.send(fd)
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  </body>
+</html>
